@@ -1,8 +1,11 @@
-make:
+build:
 	docker compose up --build api
 
-make-all:
+build-all:
 	docker compose up --build
 
 run:
-	docker compose up
+	docker compose start
+
+stop:
+	docker compose stop

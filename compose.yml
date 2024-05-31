@@ -2,5 +2,20 @@ services:
   api:
     build: .
     container_name: go-restful-api
+    restart: always
     ports:
       - "3000:3000"
+    depends_on:
+      - postgres
+
+  postgres:
+    restart: always
+    build:
+      context: .
+      dockerfile: postgres/Dockerfile
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
