@@ -7,5 +7,11 @@ build-all:
 run:
 	docker compose start
 
+dev:
+	go run ./src/
+
 stop:
 	docker compose stop
+
+run-db:
+	docker compose start postgres
