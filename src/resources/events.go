@@ -17,6 +17,28 @@ type Event struct {
 	Enddate     string `db:"enddate"`
 }
 
+func GetEvents(c echo.Context) error {
+	pg := db.GetDatabase()
+
+	events := []Event{}
+
+	row, err := pg.Queryx("SELECT * FROM api.Events")
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+
+	for row.Next() {
+		var event Event;
+		err = row.StructScan(&event)
+		if err != nil {
+			return c.String(http.StatusInternalServerError, err.Error())
+		}
+		events = append(events, event)
+	}
+
+	return c.JSON(http.StatusOK, events)
+}
+
 func GetEventById(c echo.Context) error {
 	idStr := c.Param("id")
 
@@ -34,8 +56,6 @@ func GetEventById(c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
-
-	fmt.Println("This got this far!")
 
 	return c.JSON(http.StatusOK, event)
 }
