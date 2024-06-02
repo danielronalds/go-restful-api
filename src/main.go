@@ -3,11 +3,6 @@ package main
 import (
 	"net/http"
 
-	/*
-		"github.com/danielronalds/go-restful-api/src/db"
-		"github.com/danielronalds/go-restful-api/src/resources"
-	*/
-
 	"github.com/danielronalds/go-restful-api/src/resources"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -16,8 +11,8 @@ import (
 func main() {
 	e := echo.New()
 	e.Use(middleware.Logger())
-	
-	e.GET("/hello-world", func (c echo.Context) error {
+
+	e.GET("/hello-world", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, world!")
 	})
 
