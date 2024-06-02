@@ -79,6 +79,25 @@ func CreateEvent(c echo.Context) error {
 	return c.JSON(http.StatusOK, insertedEvent)
 }
 
+func UpdateEvent(c echo.Context) error {
+	updatedEvent := new(Event)
+
+	if err := c.Bind(&updatedEvent); err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+
+	pg := db.GetDatabase()
+
+	query := `UPDATE api.Events SET Name = $1, Description = $2, Startdate = $3, Enddate = $4 WHERE Id = $5;`
+
+	_, err := pg.Exec(query, updatedEvent.Name, updatedEvent.Description, updatedEvent.Startdate, updatedEvent.Enddate, updatedEvent.Id)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, updatedEvent)
+}
+
 func DeleteEvent(c echo.Context) error {
 	idStr := c.Param("id")
 
