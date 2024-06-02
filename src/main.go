@@ -24,6 +24,7 @@ func main() {
 	e.GET("/events", resources.GetEvents)
 	e.GET("/events/:id", resources.GetEventById)
 	e.POST("/events", resources.CreateEvent)
+	e.DELETE("/events/:id", resources.DeleteEvent)
 
 	e.Logger.Fatal(e.Start(":3000"))
 }

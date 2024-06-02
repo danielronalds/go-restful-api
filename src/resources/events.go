@@ -82,3 +82,28 @@ func CreateEvent(c echo.Context) error {
 
 	return c.String(http.StatusOK, fmt.Sprintf("Affected %v row", rowsAffected))
 }
+
+func DeleteEvent(c echo.Context) error {
+	idStr := c.Param("id")
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+
+	pg := db.GetDatabase()
+
+	query := `DELETE FROM api.Events WHERE Id = $1`
+	result, err := pg.Exec(query, id)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+
+	rowsAffected, err := result.RowsAffected()
+
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+
+	return c.String(http.StatusOK, fmt.Sprintf("Affected %v row", rowsAffected))
+}
