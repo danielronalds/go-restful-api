@@ -23,6 +23,7 @@ func main() {
 
 	e.GET("/events", resources.GetEvents)
 	e.GET("/events/:id", resources.GetEventById)
+	e.POST("/events", resources.CreateEvent)
 
 	e.Logger.Fatal(e.Start(":3000"))
 }
