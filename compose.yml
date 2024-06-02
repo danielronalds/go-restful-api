@@ -2,14 +2,14 @@ services:
   api:
     build: .
     container_name: go-restful-api
-    restart: always
+    restart: unless-stopped
     ports:
       - "3000:3000"
     depends_on:
       - postgres
 
   postgres:
-    restart: always
+    restart: unless-stopped
     build:
       context: .
       dockerfile: postgres/Dockerfile

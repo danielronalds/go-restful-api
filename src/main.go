@@ -1,32 +1,27 @@
 package main
 
 import (
-	"log"
+	"net/http"
 
-	"github.com/danielronalds/go-restful-api/src/db"
+	/*
+		"github.com/danielronalds/go-restful-api/src/db"
+		"github.com/danielronalds/go-restful-api/src/resources"
+	*/
+
 	"github.com/danielronalds/go-restful-api/src/resources"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
-	pg := db.GetDatabase()
-	defer pg.Close()
+	e := echo.New()
+	e.Use(middleware.Logger())
+	
+	e.GET("/hello-world", func (c echo.Context) error {
+		return c.String(http.StatusOK, "Hello, world!")
+	})
 
-	// Test the connection to the database
-	if err := pg.Ping(); err != nil {
-		log.Fatal(err)
-	} else {
-		log.Println("Successfully Connected")
-	}
+	e.GET("/events/:id", resources.GetEventById)
 
-	event := resources.Event{}
-
-	rows, _ := pg.Queryx("SELECT * FROM api.Events")
-
-	for rows.Next() {
-		err := rows.StructScan(&event)
-		if err != nil {
-			log.Fatalln(err)
-		}
-		log.Printf("%#v\n", event)
-	}
+	e.Logger.Fatal(e.Start(":3000"))
 }

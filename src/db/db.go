@@ -8,18 +8,18 @@ import (
 	_ "github.com/lib/pq"
 )
 
-
-// Struct that represents the required info for connecting to the postgres db
+// PostgresConfig Struct that represents the required info for connecting to the postgres db
 type PostgresConfig struct {
 	user     string
 	password string
 	dbName   string
 	host     string
+	timeout  int
 }
 
 // Converts the configuration to the data source string for `sqlx`
 func (c PostgresConfig) getDataSourceName() string {
-	return fmt.Sprintf("user=%v dbname=%v sslmode=disable password=%v host=%v", c.user, c.dbName, c.password, c.host)
+	return fmt.Sprintf("user=%v dbname=%v sslmode=disable connect_timeout=%v password=%v host=%v", c.user, c.dbName, c.timeout, c.password, c.host)
 }
 
 // Singleton variable of the database connections
@@ -36,7 +36,8 @@ func GetDatabase() *sqlx.DB {
 		user:     "admin",
 		password: "admin",
 		dbName:   "mydb",
-		host:     "192.168.0.2", // postgres container ip
+		host:     "172.18.0.2", // postgres container ip
+		timeout:  5,
 	}
 
 	newDB, err := sqlx.Connect("postgres", config.getDataSourceName())
