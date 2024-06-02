@@ -22,18 +22,9 @@ func GetEvents(c echo.Context) error {
 
 	events := []Event{}
 
-	row, err := pg.Queryx("SELECT * FROM api.Events")
+	err := pg.Select(&events, "SELECT * FROM api.Events LIMIT 100")
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
-	}
-
-	for row.Next() {
-		var event Event;
-		err = row.StructScan(&event)
-		if err != nil {
-			return c.String(http.StatusInternalServerError, err.Error())
-		}
-		events = append(events, event)
 	}
 
 	return c.JSON(http.StatusOK, events)
