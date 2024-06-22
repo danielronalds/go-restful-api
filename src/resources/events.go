@@ -80,7 +80,14 @@ func CreateEvent(c echo.Context) error {
 }
 
 func UpdateEvent(c echo.Context) error {
-	updatedEvent := new(Event)
+	idStr := c.Param("id")
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+
+	updatedEvent := new(PostedEvent)
 
 	if err := c.Bind(&updatedEvent); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
@@ -88,14 +95,15 @@ func UpdateEvent(c echo.Context) error {
 
 	pg := db.GetDatabase()
 
-	query := `UPDATE api.Events SET Name = $1, Description = $2, Startdate = $3, Enddate = $4 WHERE Id = $5;`
+	query := `UPDATE api.Events SET Name = $1, Description = $2, Startdate = $3, Enddate = $4 WHERE Id = $5 RETURNING *;`
 
-	_, err := pg.Exec(query, updatedEvent.Name, updatedEvent.Description, updatedEvent.Startdate, updatedEvent.Enddate, updatedEvent.Id)
+	newEvent := Event{}
+	err = pg.Get(&newEvent, query, updatedEvent.Name, updatedEvent.Description, updatedEvent.Startdate, updatedEvent.Enddate, id)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, updatedEvent)
+	return c.JSON(http.StatusOK, newEvent)
 }
 
 func DeleteEvent(c echo.Context) error {

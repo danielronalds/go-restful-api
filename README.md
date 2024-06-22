@@ -5,6 +5,10 @@ database and sqlx, containerised with Docker
 
 ## Running
 
+```console
+make build
+```
+
 ## Supported Routes
 
 `GET /events`
@@ -21,9 +25,10 @@ database and sqlx, containerised with Docker
 > Creates an event in the database
 
 
-`PUT /events`
+`PUT /events/:id`
 
-> Updates an event in the database
+> Updates an event in the database with the given id if it
+> exists
 
 `DELETE /events/:id`
 
